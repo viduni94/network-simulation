@@ -87,8 +87,15 @@ $cbr set random_ false
 #Schedule Events
 $ns at 0.1 "cbr start"
 $ns at 1.0 "ftp start"
-$ns at 124.0 "ftp stop"
-$ns at 124.5 "cbr stop"
+$ns at 4.0 "ftp stop"
+$ns at 4.5 "cbr stop"
+
+#Call finish procedure
+$ns at 5.0 "finish"
+
+#Run the simulation
+$ns run
+
 
 
 
