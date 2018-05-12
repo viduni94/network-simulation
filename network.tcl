@@ -1,5 +1,5 @@
 #Create a simulator object
-set ns [new simulator]
+set ns [new Simulator]
 
 #Define colours for dataflows
 $ns color 1 Green
@@ -14,8 +14,8 @@ set nf [open out.nam w]
 $ns namtrace-all $nf
 
 #Define a 'finish' procedure
-proc finish{} {
-	global ns tf nf
+proc finish {} {
+	global ns nf tf
 	$ns flush-trace
 
 	#Close the trace file
@@ -70,10 +70,11 @@ $ftp set type_ FTP
 
 #Setup a UDP Connection
 set udp [new Agent/UDP]
+$udp set class_ 2
 $ns attach-agent $n1 $udp
-set sinkudp [new Agent/UDPSink]
-$ns attach-agent $n4 $sinkudp
-$ns connect $udp $sinkudp
+set null [new Agent/Null]
+$ns attach-agent $n3 $null
+$ns connect $udp $null
 $udp set fid_ 2
 
 #Setup a CBR over UDP connection
@@ -85,20 +86,13 @@ $cbr set rate_ 1mb
 $cbr set random_ false
 
 #Schedule Events
-$ns at 0.1 "cbr start"
-$ns at 1.0 "ftp start"
-$ns at 4.0 "ftp stop"
-$ns at 4.5 "cbr stop"
+$ns at 0.1 "$cbr start"
+$ns at 1.0 "$tcp start"
+$ns at 4.0 "$ftp stop"
+$ns at 4.5 "$cbr stop"
 
 #Call finish procedure
 $ns at 5.0 "finish"
 
 #Run the simulation
 $ns run
-
-
-
-
-
-
-
