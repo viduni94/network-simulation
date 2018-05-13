@@ -2,10 +2,10 @@
 set ns [new Simulator]
 
 #Define colours for dataflows
-$ns color 1 Green
-$ns color 2 Blue
+$ns color 1 Blue
+$ns color 2 Red
 
-#Create the tracefiles
+#Trace file
 set tf [open out.tr w]
 $ns trace-all $tf
 
@@ -23,11 +23,12 @@ proc finish {} {
 	close $tf
 
 	#Execute nam on the trace file
-	exec nam out.nam &
+	exec xgraph $tf -geometry 800x400 &
+	#exec nam out.nam &
 	exit 0
 }
 
-#Create 4 nodes
+#Create 6 nodes
 set n0 [$ns node]
 set n1 [$ns node]
 set n2 [$ns node]
@@ -41,6 +42,9 @@ $ns duplex-link $n1 $r1 10Mb 10ms DropTail
 $ns duplex-link $r1 $r2 5Mb 20ms DropTail
 $ns duplex-link $r2 $n2 10Mb 10ms DropTail
 $ns duplex-link $r2 $n3 10Mb 10ms DropTail
+
+#Set Queue size of link (r1-r2) to 10
+$ns queue-limit $r1 $r2 10
 
 #Node position for NAM
 $ns duplex-link-op $n0 $r1 orient right-down
@@ -57,10 +61,11 @@ $ns duplex-link-op $r1 $r2 queuePos 0.5
 
 #Setup a TCP Connection
 set tcp [new Agent/TCP]
+$tcp set class_ 2
 $ns attach-agent $n0 $tcp
-set sinktcp [new Agent/TCPSink]
-$ns attach-agent $n2 $sinktcp
-$ns connect $tcp $sinktcp
+set sink [new Agent/TCPSink]
+$ns attach-agent $n2 $sink
+$ns connect $tcp $sink
 $tcp set fid_ 1
 
 #Setup a FTP over TCP connection
@@ -70,7 +75,6 @@ $ftp set type_ FTP
 
 #Setup a UDP Connection
 set udp [new Agent/UDP]
-$udp set class_ 2
 $ns attach-agent $n1 $udp
 set null [new Agent/Null]
 $ns attach-agent $n3 $null
@@ -87,7 +91,7 @@ $cbr set random_ false
 
 #Schedule Events
 $ns at 0.1 "$cbr start"
-$ns at 1.0 "$tcp start"
+$ns at 1.0 "$ftp start"
 $ns at 4.0 "$ftp stop"
 $ns at 4.5 "$cbr stop"
 
