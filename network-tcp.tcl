@@ -6,11 +6,11 @@ $ns color 1 Blue
 $ns color 2 Red
 
 #Trace file
-set tf [open out.tr w]
+set tf [open out1.tr w]
 $ns trace-all $tf
 
 #Open the nam trace file
-set nf [open out.nam w]
+set nf [open out1.nam w]
 $ns namtrace-all $nf
 
 #Define a 'finish' procedure
@@ -23,7 +23,7 @@ proc finish {} {
 	close $tf
 
 	#Execute nam on the trace file
-	exec nam out.nam &
+	exec nam out1.nam &
 	exit 0
 }
 
@@ -72,27 +72,25 @@ set ftp [new Application/FTP]
 $ftp attach-agent $tcp
 $ftp set type_ FTP
 
-#Setup a UDP Connection
-set udp [new Agent/UDP]
-$ns attach-agent $n1 $udp
-set null [new Agent/Null]
-$ns attach-agent $n3 $null
-$ns connect $udp $null
-$udp set fid_ 2
+#Setup the second TCP connection
+set tcp1 [new Agent/TCP]
+$tcp1 set class_ 2
+$ns attach-agent $n1 $tcp1
+set sink1 [new Agent/TCPSink]
+$ns attach-agent $n3 $sink1
+$ns connect $tcp1 $sink1
+$tcp1 set fid_ 2
 
-#Setup a CBR over UDP connection
-set cbr [new Application/Traffic/CBR]
-$cbr attach-agent $udp
-$cbr set type_ CBR
-$cbr set packet_size_ 1000
-$cbr set rate_ 1mb
-$cbr set random_ false
+#Setup a FTP over TCP
+set ftp1 [new Application/FTP]
+$ftp1 attach-agent $tcp1
+$ftp1 set type_ FTP
 
 #Schedule Events
-$ns at 0.1 "$cbr start"
-$ns at 0.5 "$ftp start"
-$ns at 4.0 "$ftp stop"
-$ns at 4.5 "$cbr stop"
+$ns at 0.1 "$ftp start"
+$ns at 0.5 "$ftp1 start"
+$ns at 4.0 "$ftp1 stop"
+$ns at 4.5 "$ftp stop"
 
 #Call finish procedure
 $ns at 5.0 "finish"
