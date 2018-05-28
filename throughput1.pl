@@ -33,17 +33,16 @@ if ($x[4] eq 'cbr')
 }
 }
 else
-{   $throughput=0.000001*$sum/$granularity;
+{   $throughput=0.000008*$sum/$granularity;
     print STDOUT "$x[1] $throughput\n";
     $clock=$clock+$granularity;
     $sum=0;
 }   
 }
-    $throughput=0.000001*$sum/$granularity;
+    $throughput=0.000008*$sum/$granularity;
     print STDOUT "$x[1] $throughput\n";
     $clock=$clock+$granularity;
     $sum=0;
 
     close DATA;
-exit(0);
- 
+exit(0); 

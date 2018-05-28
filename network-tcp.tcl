@@ -36,11 +36,11 @@ set r1 [$ns node]
 set r2 [$ns node]
 
 #Create links between the nodes
-$ns duplex-link $n0 $r1 10Mb 10ms DropTail
-$ns duplex-link $n1 $r1 10Mb 10ms DropTail
-$ns duplex-link $r1 $r2 5Mb 20ms DropTail
-$ns duplex-link $r2 $n2 10Mb 10ms DropTail
-$ns duplex-link $r2 $n3 10Mb 10ms DropTail
+$ns duplex-link $n0 $r1 2Mb 10ms DropTail
+$ns duplex-link $n1 $r1 2Mb 10ms DropTail
+$ns duplex-link $r1 $r2 1.7Mb 20ms DropTail
+$ns duplex-link $r2 $n2 2Mb 10ms DropTail
+$ns duplex-link $r2 $n3 2Mb 10ms DropTail
 
 #Set Queue size of link (r1-r2) to 10
 $ns queue-limit $r1 $r2 10
@@ -89,11 +89,11 @@ $ftp1 set type_ FTP
 #Schedule Events
 $ns at 0.1 "$ftp start"
 $ns at 0.5 "$ftp1 start"
-$ns at 4.0 "$ftp1 stop"
-$ns at 4.5 "$ftp stop"
+$ns at 25.0 "$ftp1 stop"
+$ns at 25.5 "$ftp stop"
 
 #Call finish procedure
-$ns at 5.0 "finish"
+$ns at 26.0 "finish"
 
 #Run the simulation
 $ns run
